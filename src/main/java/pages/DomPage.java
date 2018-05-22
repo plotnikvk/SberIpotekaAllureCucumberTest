@@ -21,7 +21,7 @@ public class DomPage extends BasePageObject {
         PageFactory.initElements(BaseSteps.getDriver(), this);
     }
 
-    WebDriverWait wait = new WebDriverWait(BaseSteps.getDriver(), 10);
+    WebDriverWait wait = new WebDriverWait(BaseSteps.getDriver(), 20);
 
     @FindBy(xpath = "//h1")
     public WebElement title;
@@ -92,6 +92,7 @@ public class DomPage extends BasePageObject {
     public void checkField(int i,String expected)
     {
         new Actions(BaseSteps.getDriver()).moveToElement(fieldsWithResults.get(i));
+
         Assert.assertTrue(String.format("В поле рассчитано значение %s. Ожидалось - %s", fieldsWithResults.get(i).getText(),
                 expected), wait.until((ExpectedCondition<Boolean>) driver -> {
             String actualResult =  fieldsWithResults.get(i).getText();
