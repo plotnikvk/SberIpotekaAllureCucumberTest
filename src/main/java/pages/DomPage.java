@@ -21,7 +21,7 @@ public class DomPage extends BasePageObject {
         PageFactory.initElements(BaseSteps.getDriver(), this);
     }
 
-    WebDriverWait wait = new WebDriverWait(BaseSteps.getDriver(), 20);
+    WebDriverWait wait = new WebDriverWait(BaseSteps.getDriver(), 10);
 
     @FindBy(xpath = "//h1")
     public WebElement title;
@@ -36,7 +36,7 @@ public class DomPage extends BasePageObject {
     @FindBy(xpath = "//input[contains(@class,'dcCalc')]")
     public List<WebElement> fields;
 
-    @FindBy(xpath = "//input[@type='checkbox']/ancestor::label")
+    @FindBy(xpath = "//input[@type='checkbox']")
     List<WebElement>checkBoxes;
 
     @FindBy(xpath = "//div[contains(@class,'result')]//span")
@@ -73,30 +73,27 @@ public class DomPage extends BasePageObject {
     }
 
     public void fillCheckBox(int i, String value) {
-        wait.until(ExpectedConditions.visibilityOf(checkBoxes.get(i)));
         if (value.equals("true")){
-            if (checkBoxes.get(i).isSelected()){
-                checkBoxes.get(i).click();
-            } else {
-                return;
+            if (!checkBoxes.get(i).isSelected()){
+                wait.until(ExpectedConditions.elementToBeClickable( checkBoxes.get(i).findElement(By.xpath("./ancestor::label")))).click();
+                wait.until(ExpectedConditions.attributeContains(checkBoxes.get(i).findElement(By.xpath("./ancestor::label")), "class", "checked"));
             }
         }
-       else if(value.equals("false")){
+        else if(value.equals("false")){
             if(checkBoxes.get(i).isSelected()){
-                return;
+                wait.until(ExpectedConditions.elementToBeClickable( checkBoxes.get(i).findElement(By.xpath("./ancestor::label")))).click();
+                wait.until(ExpectedConditions.attributeToBe(checkBoxes.get(i).findElement(By.xpath("./ancestor::label")), "class", "dcCalc_switch dcCalc_switch_size_medium"));
             }
-            else checkBoxes.get(i).click();
         }
     }
 
     public void checkField(int i,String expected)
     {
-        new Actions(BaseSteps.getDriver()).moveToElement(fieldsWithResults.get(i));
-
+      new Actions(BaseSteps.getDriver()).moveToElement(fieldsWithResults.get(i));
         Assert.assertTrue(String.format("В поле рассчитано значение %s. Ожидалось - %s", fieldsWithResults.get(i).getText(),
                 expected), wait.until((ExpectedCondition<Boolean>) driver -> {
             String actualResult =  fieldsWithResults.get(i).getText();
-            return actualResult.equalsIgnoreCase(expected);}));
+            return actualResult.equals(expected);}));
     }
 }
 
