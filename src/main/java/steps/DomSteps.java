@@ -53,10 +53,10 @@ public class DomSteps {
             case"Ежемесячный платеж":
                 domPage.checkField(1,value);
                 break;
-            case"Процентная ставка":
+            case"Необходимый доход":
                 domPage.checkField(2,value);
                 break;
-            case"Необходимый доход":
+            case"Процентная ставка":
                 domPage.checkField(3,value);
                 break;
             default:
